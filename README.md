@@ -91,7 +91,7 @@ Built-in LV feeder (0.4 kV, six load buses, NAYY 4x50 SE cables):
 Mitigation comparison on the same feeder:
 
 | strategy | system HC | vs baseline |
-|---|---|
+|---|---|---|
 | none (baseline) | 43.31 kW | — |
 | fixed power factor 0.95 (absorb) | 46.31 kW | +6.9% |
 | Q(U) Volt-VAr droop | 44.25 kW | +2.2% |
