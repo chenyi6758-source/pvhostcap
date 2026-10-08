@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pvhostcap"
+version = "0.1.0"
+description = "Deterministic PV hosting-capacity screening for distribution feeders, built on pandapower"
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.10"
+dependencies = [
+    "pandapower>=2.13",
+    "numpy",
+    "pandas",
+    "matplotlib",
+]
+authors = [{ name = "ChenYi-Nnergy" }]
+keywords = ["photovoltaic", "hosting-capacity", "distribution-network", "pandapower", "grid-planning"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+fast = ["numba"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
