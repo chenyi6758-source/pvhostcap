@@ -89,6 +89,10 @@ hc = system_hosting_capacity(net, load_buses)
 print(hc)
 # HC = 43.31 kW total (7.22 kW x 6 buses), binding: overvoltage at bus LV6
 
+import json
+with open("hosting_capacity.json", "w", encoding="utf-8") as f:
+    json.dump(hc.to_dict(), f, indent=2)
+
 loc = locational_hosting_capacity(net, load_buses)   # weak-bus map
 comp = compare_strategies(net, load_buses)           # mitigation comparison
 
@@ -99,6 +103,12 @@ print(approved)   # True — LV4 alone hosts up to 36.1 kW
 
 `examples/quickstart.py` runs the full workflow end to end and saves the
 figures below into `examples/output/`.
+
+`HostingCapacityResult.to_dict()` and `Violation.to_dict()` return
+JSON-serializable dictionaries containing the capacity, binding constraint,
+evaluation count, convergence flag, measured value, limit, and relative
+severity. The helpers do not write files themselves, so callers can choose
+their own report format and storage location.
 
 ## Example results
 

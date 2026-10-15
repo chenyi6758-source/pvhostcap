@@ -21,6 +21,16 @@ class Violation:
         """Relative exceedance: 1.10 means 10% beyond the limit."""
         return self.value / self.limit
 
+    def to_dict(self) -> dict:
+        """Return a JSON-serializable representation of the violation."""
+        return {
+            "kind": self.kind,
+            "element": self.element,
+            "value": self.value,
+            "limit": self.limit,
+            "severity": self.severity,
+        }
+
     def __str__(self) -> str:  # pragma: no cover - cosmetic
         unit = "p.u." if "voltage" in self.kind else "%"
         return (f"{self.kind} at {self.element}: "
