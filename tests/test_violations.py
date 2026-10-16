@@ -1,5 +1,6 @@
 """Violation detection tests on hand-built cases."""
 
+import json
 import sys
 
 sys.path.insert(0, "src")
@@ -72,3 +73,15 @@ def test_binding_violation_picks_worst():
     worst = binding_violation(viols)
     assert worst is viols[0]
     assert binding_violation([]) is None
+
+
+def test_violation_to_dict_is_json_serializable():
+    net, b1, b2 = _two_bus()
+    pp.create_sgen(net, bus=b2, p_mw=0.090)
+    assert run_case(net)
+    violation = binding_violation(check_violations(net))
+
+    payload = violation.to_dict()
+    json.dumps(payload)
+    assert payload["kind"] == "overvoltage"
+    assert payload["severity"] > 1.0

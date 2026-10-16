@@ -1,5 +1,6 @@
 """System hosting-capacity search tests."""
 
+import json
 import sys
 
 sys.path.insert(0, "src")
@@ -52,3 +53,13 @@ def test_tighter_vmax_lowers_hc():
     loose = system_hosting_capacity(net, load_buses, tol_kw=0.1, vmax=1.10)
     tight = system_hosting_capacity(net, load_buses, tol_kw=0.1, vmax=1.03)
     assert tight.hc_kw_per_bus < loose.hc_kw_per_bus
+
+
+def test_hosting_capacity_result_to_dict_is_json_serializable():
+    net, load_buses = _small_lv()
+    result = system_hosting_capacity(net, load_buses, tol_kw=0.1)
+
+    payload = result.to_dict()
+    json.dumps(payload)
+    assert payload["hc_kw_total"] == result.hc_kw_total
+    assert payload["binding"]["kind"] == result.binding.kind

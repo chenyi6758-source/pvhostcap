@@ -18,6 +18,9 @@ dependencies = [
 authors = [{ name = "ChenYi-Nnergy" }]
 keywords = ["photovoltaic", "hosting-capacity", "distribution-network", "pandapower", "grid-planning"]
 
+[project.scripts]
+pvhostcap = "pvhostcap.cli:main"
+
 [project.optional-dependencies]
 test = ["pytest"]
 fast = ["numba"]

@@ -1,5 +1,7 @@
-"""Text summaries and matplotlib figures for HC results."""
+"""Text summaries, reports, and matplotlib figures for HC results."""
 
+import html
+import json
 import matplotlib
 
 matplotlib.use("Agg")
@@ -9,6 +11,7 @@ __all__ = [
     "summarize_system",
     "summarize_locational",
     "summarize_comparison",
+    "render_html_report",
     "plot_voltage_profile",
     "plot_locational_map",
     "plot_mitigation_comparison",
@@ -51,6 +54,47 @@ def summarize_comparison(comp: dict, baseline: str = "none") -> str:
         gain = (res.hc_kw_total / base - 1.0) * 100.0 if base > 0 else 0.0
         rows.append(f"  {name:>15}: {res.hc_kw_total:7.2f} kW   ({gain:+.1f}% vs baseline)")
     return "\n".join(rows)
+
+
+def render_html_report(
+    title: str,
+    system_text: str,
+    locational_text: str,
+    mitigation_text: str,
+    json_payload: dict,
+) -> str:
+    """Render a self-contained HTML report from existing study results."""
+    payload = json.dumps(json_payload, indent=2, ensure_ascii=False)
+    sections = (
+        ("System hosting capacity", system_text),
+        ("Locational hosting capacity", locational_text),
+        ("Mitigation comparison", mitigation_text),
+    )
+    rendered = "\n".join(
+        f"<section><h2>{html.escape(heading)}</h2>"
+        f"<pre>{html.escape(text)}</pre></section>"
+        for heading, text in sections
+    )
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html.escape(title)}</title>
+  <style>
+    body {{ font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; color: #17202a; }}
+    section {{ border: 1px solid #d8dee4; border-radius: 8px; padding: 1rem; margin: 1rem 0; }}
+    pre {{ white-space: pre-wrap; background: #f6f8fa; padding: 1rem; border-radius: 6px; }}
+  </style>
+</head>
+<body>
+  <h1>{html.escape(title)}</h1>
+  <p>Deterministic first-pass screen; not an interconnection guarantee.</p>
+  {rendered}
+  <details><summary>Machine-readable JSON</summary><pre>{html.escape(payload)}</pre></details>
+</body>
+</html>
+"""
 
 
 def plot_voltage_profile(net, load_buses, title="Bus voltages at HC point"):

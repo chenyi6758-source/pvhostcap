@@ -44,6 +44,20 @@ class HostingCapacityResult:
         return (f"HC = {self.hc_kw_total:.2f} kW total "
                 f"({self.hc_kw_per_bus:.2f} kW x {self.n_pv_buses} buses){b}")
 
+    def to_dict(self) -> dict:
+        """Return a JSON-serializable result for reports and downstream tools."""
+        binding = self.binding
+        if binding is not None and hasattr(binding, "to_dict"):
+            binding = binding.to_dict()
+        return {
+            "hc_kw_per_bus": self.hc_kw_per_bus,
+            "hc_kw_total": self.hc_kw_total,
+            "n_pv_buses": self.n_pv_buses,
+            "binding": binding,
+            "evaluations": self.evaluations,
+            "converged": self.converged,
+        }
+
 
 def _add_pv(net, pv_kw: dict) -> list:
     """Attach one sgen per bus in pv_kw (kW, positive = generation)."""
